@@ -13,10 +13,14 @@ def gerar_grafo(quant_nos: int, prob_conexao: float = 0.3):
     grafo.add_nodes_from(nos)
 
     # Adiciona arestas com peso aleatório
-    for i in range(quant_nos):
-        for j in range(quant_nos):
-            if (i != j and random.random() < prob_conexao):
-                grafo.add_edge(nos[i], nos[j])
+    num = 0
+    if(prob_conexao > 0.0):
+        for i in range(quant_nos):
+            for j in range(quant_nos):
+                num += 1
+                print(f"{num:,}")
+                if (i != j and random.random() < prob_conexao):
+                    grafo.add_edge(nos[i], nos[j])
 
     return grafo
 
@@ -58,9 +62,9 @@ def salvar_grafo_csv(grafo: nx.Graph, pasta: str = '', nome: str = "grafo.csv"):
 
 if (__name__ == '__main__'):
     caminho = "grafos"
-    quant_tabelas = 1000
+    quant_tabelas = 1_000_000
     nome = f"grafo{quant_tabelas}"
 
-    grafo = gerar_grafo(quant_tabelas, prob_conexao=0.005)
-    salvar_grafo_imagem(grafo, pasta=caminho, nome=f"{nome}.png")
+    grafo = gerar_grafo(quant_tabelas, prob_conexao=0.0000001)
+    # salvar_grafo_imagem(grafo, pasta=caminho, nome=f"{nome}.png")
     salvar_grafo_csv(grafo, pasta=caminho, nome=f"{nome}.csv")

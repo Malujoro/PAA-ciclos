@@ -9,7 +9,7 @@ class Cor(Enum):
     CINZA = 1
     PRETO = 2
 
-def ler_grafo_csv(caminho_csv: str):
+def ler_grafo_csv(caminho_csv: str, lista_nos=None):
     grafo = nx.DiGraph()
 
     with open(caminho_csv, mode='r', newline='') as arquivo_csv:
@@ -19,6 +19,11 @@ def ler_grafo_csv(caminho_csv: str):
         for linha in leitor:
             origem, destino = linha
             grafo.add_edge(origem, destino)
+
+    if (lista_nos):
+        for no in lista_nos:
+            if no not in grafo.nodes:
+                grafo.add_node(no)
 
     limpar_grafo(grafo)
     return grafo
@@ -94,14 +99,15 @@ if __name__ == '__main__':
         writer.writerow(["tamanho", "iteracao", "tempo", "memoria_pico_kb",])
 
         iteracoes = 30
-        lista_tamanhos = [10, 100, 1000]
+        lista_tamanhos = [10, 100, 1_000, 1_000_000]
 
         for tamanho in lista_tamanhos:
             linha()
 
             nome_grafo = f"grafo{tamanho}.csv"
             caminho_csv = f'grafos/{nome_grafo}'
-            grafo = ler_grafo_csv(caminho_csv)
+            lista_nos = [f"t{i + 1}" for i in range(tamanho)]
+            grafo = ler_grafo_csv(caminho_csv, lista_nos)
 
             print(
                 f"GRAFO COM {tamanho} TABELAS")
@@ -127,7 +133,7 @@ if __name__ == '__main__':
 
                 writer.writerow(
                     [tamanho, it + 1, csv_tempo, csv_memoria_pico])
-            
+
             if (ciclo):
                 print("Existe ciclo\n")
             else:
