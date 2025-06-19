@@ -1,13 +1,10 @@
 import networkx as nx
 import csv
-from enum import Enum
 import time
+from cor import Cor
 import tracemalloc
+from grafo import gerar_nos
 
-class Cor(Enum):
-    BRANCO = 0
-    CINZA = 1
-    PRETO = 2
 
 def ler_grafo_csv(caminho_csv: str, lista_nos=None):
     grafo = nx.DiGraph()
@@ -79,21 +76,7 @@ def verificarCicloAuxiliar(grafo, atual):
 def linha(char: str = "=", tam: int = 70):
     print(char * tam)
 
-
 if __name__ == '__main__':
-    # nome_grafo = "grafo10.csv"
-    # caminho_csv = f'grafos/{nome_grafo}'
-    # grafo = ler_grafo_csv(caminho_csv)
-
-    # exibir_grafo(grafo)
-
-    # if (verificarCiclo(grafo)):
-    #     print("Existe ciclo\n")
-    # else:
-    #     print("Não existe ciclo\n")
-
-    # exibir_grafo(grafo)
-
     with open("tempos_ciclo.csv", mode="w", newline="") as arquivoCSV:
         writer = csv.writer(arquivoCSV)
         writer.writerow(["tamanho", "iteracao", "tempo", "memoria_pico_kb",])
@@ -106,7 +89,7 @@ if __name__ == '__main__':
 
             nome_grafo = f"grafo{tamanho}.csv"
             caminho_csv = f'grafos/{nome_grafo}'
-            lista_nos = [f"t{i + 1}" for i in range(tamanho)]
+            lista_nos = gerar_nos(tamanho)
             grafo = ler_grafo_csv(caminho_csv, lista_nos)
 
             print(

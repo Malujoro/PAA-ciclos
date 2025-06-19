@@ -4,12 +4,15 @@ import matplotlib.pyplot as plt
 import random
 import csv
 
+def gerar_nos(quant):
+    return [f"t{i + 1}" for i in range(quant)]
+
 # Função para gerar um grafo direcional
 def gerar_grafo(quant_nos: int, prob_conexao: float = 0.3):
     grafo = nx.DiGraph()
 
     # Gera e adiciona os nós
-    nos = [f"t{i + 1}" for i in range(quant_nos)]
+    nos = gerar_nos(quant_nos)
     grafo.add_nodes_from(nos)
 
     # Adiciona arestas com peso aleatório
