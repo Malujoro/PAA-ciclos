@@ -1,6 +1,8 @@
 import networkx as nx
 import csv
 from enum import Enum
+import time
+import tracemalloc
 
 class Cor(Enum):
     BRANCO = 0
@@ -18,6 +20,7 @@ def ler_grafo_csv(caminho_csv: str):
             origem, destino = linha
             grafo.add_edge(origem, destino)
 
+    limpar_grafo(grafo)
     return grafo
 
 def limpar_grafo(grafo: nx.DiGraph):
@@ -68,16 +71,66 @@ def verificarCicloAuxiliar(grafo, atual):
     return False
 
 
+def linha(char: str = "=", tam: int = 70):
+    print(char * tam)
+
+
 if __name__ == '__main__':
-    nome_grafo = "grafo1000.csv"
-    caminho_csv = f'grafos/{nome_grafo}'
-    grafo = ler_grafo_csv(caminho_csv)
+    # nome_grafo = "grafo10.csv"
+    # caminho_csv = f'grafos/{nome_grafo}'
+    # grafo = ler_grafo_csv(caminho_csv)
 
     # exibir_grafo(grafo)
 
-    if (verificarCiclo(grafo)):
-        print("Existe ciclo\n")
-    else:
-        print("Não existe ciclo\n")
+    # if (verificarCiclo(grafo)):
+    #     print("Existe ciclo\n")
+    # else:
+    #     print("Não existe ciclo\n")
 
     # exibir_grafo(grafo)
+
+    with open("tempos_ciclo.csv", mode="w", newline="") as arquivoCSV:
+        writer = csv.writer(arquivoCSV)
+        writer.writerow(["tamanho", "iteracao", "tempo", "memoria_pico_kb",])
+
+        iteracoes = 30
+        lista_tamanhos = [10, 100, 1000]
+
+        for tamanho in lista_tamanhos:
+            linha()
+
+            nome_grafo = f"grafo{tamanho}.csv"
+            caminho_csv = f'grafos/{nome_grafo}'
+            grafo = ler_grafo_csv(caminho_csv)
+
+            print(
+                f"GRAFO COM {tamanho} TABELAS")
+
+            for it in range(iteracoes):
+                tracemalloc.start()
+                tracemalloc.reset_peak()
+                inicio = time.perf_counter()
+
+                ciclo = verificarCiclo(grafo)
+
+                fim = time.perf_counter()
+                memoria_atual_b, memoria_pico_b = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+
+                tempo = fim - inicio
+
+                csv_tempo = f"{tempo:.6f}"
+                csv_memoria_pico = f"{memoria_pico_b / 1024:.2f}"
+
+                print(
+                    f"[{it + 1}ª Iteração] {csv_tempo} segundos, com pico de {csv_memoria_pico} bytes")
+
+                writer.writerow(
+                    [tamanho, it + 1, csv_tempo, csv_memoria_pico])
+            
+            if (ciclo):
+                print("Existe ciclo\n")
+            else:
+                print("Não existe ciclo\n")
+
+            linha(char="-", tam=60)
