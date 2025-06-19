@@ -58,9 +58,9 @@ def salvar_grafo_csv(grafo: nx.Graph, pasta: str = '', nome: str = "grafo.csv"):
 
 if (__name__ == '__main__'):
     caminho = "grafos"
-    nome = "grafo"
-    quant_tabelas = 5
+    quant_tabelas = 1000
+    nome = f"grafo{quant_tabelas}"
 
-    grafo = gerar_grafo(quant_tabelas)
+    grafo = gerar_grafo(quant_tabelas, prob_conexao=0.005)
     salvar_grafo_imagem(grafo, pasta=caminho, nome=f"{nome}.png")
     salvar_grafo_csv(grafo, pasta=caminho, nome=f"{nome}.csv")
